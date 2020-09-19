@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+HELLO
+<div class="col-lg-6 col-md-8 col-sm-12">
+    <ul class="list-group" id="messages">
+      {% for place in detailed_list %}
+        <li class="list-group-item">
+          {{place}}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% endblock %}
