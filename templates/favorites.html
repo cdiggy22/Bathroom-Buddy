@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Bathroom Buddy</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Search</a>
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+  <div class="col-sm-9">
+      <h1>Favorites </h1>
+    <div class="row">
+        <ul class="list-group" id="restroom">
+          {% for restroom in user.favorites %}
+          <li class="list-group-item">
+            <ul style="list-style-type:none;">
+               <li>
+                   <i class="fas fa-toilet-paper"></i>
+                   <b>{{restroom.name}}</b> 
+                   located at {{restroom.address}}
+                </li>
+            </ul>
+            <form method="POST" action="/restrooms/{{restroom.place_id}}/favorite" class="restroom-favorite">
+                <button class="
+                  btn
+                  btn-sm
+                  {{'btn-primary'}}"
+                >
+                    <i class="far fa-trash-alt"></i>
+                </button>
+              </form>
+        
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

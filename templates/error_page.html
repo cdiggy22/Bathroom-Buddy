@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body_class %}error-404{%endblock %}
+
+{% block content %}
+
+  <div class="message-404">
+    <h4 class="display-4">Sorry, that page doesn't exist! {{ request.status }}</h4>
+    <p class="m-3">
+      Enter a valid address or postal zipcode
+      <a href="/"><b>return to the homepage</b></a>.</p>
+    <div class="row">
+      <div class="col-sm-8 ml-auto mr-auto">
+        <form class="form-inline" action="/search">
+          <input name="q" class="form-control mb-0 mr-2" placeholder="Search ">
+          <button class="btn btn-default">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,11 +1,66 @@
 {% extends 'base.html' %}
 {% block content %}
-HELLO
-<div class="col-lg-6 col-md-8 col-sm-12">
-    <ul class="list-group" id="messages">
+
+<div class="col-lg-12 col-md-8 col-sm-12">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Bathroom Buddy</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/">Search</a>
+            {% if g.user %}
+                <a class="nav-link" href="/users/{{g.user.id}}/favorites">Favorites</a>
+            {% endif %}
+            <a class="nav-link" href="/logout">Logout</a>
+          </div>
+        </div>
+      </nav>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">Bathroom Buddy</h1>
+          <p class="lead">We know you have to go!</p>
+        </div>
+        <a href="/">Search Again</a>
+      </div>
+    <ul class="list-group" id="restroom">
       {% for place in detailed_list %}
         <li class="list-group-item">
-          {{place}}
+          <ul style="list-style-type:none;">
+             <li>Name: {{place.name}}</li>
+             <li>Address: {{place.formatted_address}}</li>
+             {% if place.rating %}
+                <li>Rating: {{place.rating}}</li>
+             {% endif %}
+             {% if place.formatted_phone_number %}
+                <li>Number: {{place.formatted_phone_number}}</li>
+             {% endif %}
+          </ul>
+        </li>
+          {% if g.user.id %}
+          <form method="POST" action="/restrooms/{{place.place_id}}/favorite" class="restroom-favorite">
+            <button class="
+              btn
+              btn-sm
+              {{'btn-primary'}}"
+            >
+              <i class="fas fa-star"> Add to Favorties</i>
+            </button>
+          </form>
+
+          <form method="POST" action="" class="blacklist">
+            <button class="
+              btn
+              btn-sm
+              {{'btn-danger'}}"
+            >
+            <i class="fas fa-toilet-paper-slash"></i><small>No bathroom</small>
+            </button>
+          </form>
+          {% endif %}
+          
         </li>
       {% endfor %}
     </ul>

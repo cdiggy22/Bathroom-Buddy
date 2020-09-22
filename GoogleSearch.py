@@ -20,7 +20,8 @@ class GoogleSearchClass(object):
     bathroom_type = ['restaurant', 'cafe', 'food', 'book_store', 'point_of_interest', 'supermarket', 'home_goods_store', 'movie_theater', 'library']
     place_ids = []
     detailed_list = []
-    page_2 = {}
+    # page_2 = {}
+    filtered=[]
 
 
     def __init__(self, api_key=None, address_or_postal_code=None, *args, **kwargs):
@@ -53,7 +54,7 @@ class GoogleSearchClass(object):
         self.lng = lng
         return lat, lng
     
-    def search(self, keyword = 'store', radius=20000, location=None):
+    def search(self, keyword='food store', location=None, rankby='distance', pagetoken=None):
         lat, lng = self.lat, self.lng
         if location != None:
             lat, lng = self.extract_lat_lng(location=location)
@@ -61,39 +62,30 @@ class GoogleSearchClass(object):
         params = {
             "key": self.api_key,
             "location": f"{lat},{lng}",
-            "radius": radius,
+            "rankby": rankby,
             "keyword": keyword
         }
         params_encoded = urlencode(params)
         places_url = f"{endpoint}?{params_encoded}"
         r = requests.get(places_url)
-        # print(places_url, r.text)
         if r.status_code not in range(200, 250):
                     return {}
         results = r.json()
-        
 
-        # if results.get('next_page_token', None):
-        #     time.sleep(2) 
-        #     places_results = gmaps.places_nearby(page_token=results['next_page_token'])
-            
-            
-        
+
         self.search_results = results
-        # self.page_2 = places_results
-        return results, len(results['results'])
-
-    #filter search results 
+        return results 
+        
+ 
     def filter_results(self):
         results = self.search_results
-        # page_2 = self.page_2
         bathroom = self.bathroom_type
-        # filtered = []
-        place_id_list = self.place_ids
+        filtered = self.filtered
+        place_id_list = []
 
         for place in results['results']:
             if 'OPERATIONAL' in place.values() and any(item in bathroom for item in place['types']):
-                # filtered.append(place)
+                filtered.append(place)
                 place_id_list.append(place['place_id'])
 
         # for place in page_2['results']:
@@ -102,14 +94,24 @@ class GoogleSearchClass(object):
         #         place_id_list.append(place['place_id'])
         
         
-        # self.filtered_results = filtered
         self.place_ids = place_id_list
-        return place_id_list
+        self.search_results={}
+        print(type(filtered))
+        return filtered, place_id_list
         
     # Show details of place 
-    def detail(self, place_id=None, fields=["name", "rating", "formatted_phone_number", "formatted_address", "place_id"]):
+    def detail(self, place_id=id, fields=["name", "rating", "formatted_phone_number", "formatted_address", "place_id"]):
         place_id_list = self.place_ids
-        detailed_list = self.detailed_list
+        detailed_list = []
+
+        # for place in filtered:
+        #     place_id = place.place_id
+        #     detail_base_endpoint = f"https://maps.googleapis.com/maps/api/place/details/{self.data_type}"
+        #     detail_params = {
+        #     "place_id": f"{place_id}",
+        #     "fields" : ",".join(fields),
+        #     "key": self.api_key
+        #     }
 
         for id in place_id_list:
             place_id = id
@@ -131,4 +133,6 @@ class GoogleSearchClass(object):
             detailed_list.append(result['result'])
 
         self.detailed_list = detailed_list
+        self.place_ids=[]
         return detailed_list
+       

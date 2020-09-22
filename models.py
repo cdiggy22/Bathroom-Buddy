@@ -1,5 +1,6 @@
 """SQLAlchemy models for Bathroom Buddy"""
 
+from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,9 +12,10 @@ class Restroom(db.Model):
 
     __tablename__ = 'restrooms'
 
-    id = db.Column(
-        db.Integer,
+    place_id = db.Column(
+        db.Text,
         primary_key=True,
+        unique=True
     )
 
     name = db.Column(
@@ -21,29 +23,9 @@ class Restroom(db.Model):
         nullable=False,
     )
 
-    street = db.Column(
+    address=db.Column(
         db.Text,
-        nullable=False,
-    )
-
-    city = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    state = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    country = db.Column(
-        db.Text,
-        nullable=False,
-    )
-
-    accessible = db.Column(
-        db.Boolean,
-        nullable=True,
+        nullable=False
     )
 
     latitude = db.Column(
@@ -64,6 +46,12 @@ class Restroom(db.Model):
     downvote = db.Column(
         db.Integer,
         nullable=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
     )
 
     user = db.relationship('User')
@@ -94,10 +82,11 @@ class User(db.Model):
         db.Text,
         nullable=False,
     )
+    restrooms = db.relationship('Restroom')
 
-    favorties = db.relationship(
+    favorites = db.relationship(
         'Restroom',
-        secondary="favorites"
+        secondary="favorites", backref='users'
     )
 
 
@@ -158,8 +147,8 @@ class Favorite(db.Model):
     )
 
     restroom_id = db.Column(
-        db.Integer,
-        db.ForeignKey('restrooms.id', ondelete='cascade')
+        db.Text,
+        db.ForeignKey('restrooms.place_id', ondelete='cascade')
     )
 
 def connect_db(app):

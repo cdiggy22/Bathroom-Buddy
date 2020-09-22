@@ -1,62 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bathroom Buddy</title>
-    <link rel="stylesheet"
-        href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
-  <script src="https://unpkg.com/jquery"></script>
-  <script src="https://unpkg.com/popper"></script>
-  <script src="https://unpkg.com/bootstrap"></script>
+{% extends 'base.html' %}
+{% block content %}
 
-  <link rel="stylesheet"
-        href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-  <link rel="stylesheet" href="/static/stylesheets/style.css">
-  <link rel="shortcut icon" href="/static/favicon.ico">
-</head>
-<body>
-    <section>
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-8 col-xl-6">
-              <div class="row">
-                <div class="col text-center">
-                  <h1 class='title'>Bathroom Buddy </h1>
-                  <p class="text-h3">This won't take long, we know you have to go! </p>
-                </div>
-              </div>
-              <div class="row align-items-center">
-                <div class="col mt-4">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control" placeholder="Full Name" id="name">
-                </div>
-              </div>
-              <div class="row align-items-center mt-4">
-                <div class="col">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" placeholder="Email" id="email">
-                </div>
-              </div>
-              <div class="row align-items-center mt-4">
-                <div class="col">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control" placeholder="Password" id="password">
-                </div>
-                <div class="col">
-                  <label for="password2">Verify Password</label>
-                  <input type="password" class="form-control" placeholder="Confirm Password" id="password2">
-                </div>
-              </div>
-              <div class="row justify-content-start mt-4">
-                <div class="col">
-                  <button class="btn btn-primary mt-4 btn-lg btn-block">Submit</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    
-</body>
-</html>
+<div class="row justify-content-md-center">
+<div class="col-md-7 col-lg-5">
+  <h2 class="join-message">Sign Up to Kepp Track of your favorite places</h2>
+  <form method="POST" id="user_form">
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      {% for error in field.errors %}
+        <span class="text-danger">{{ error }}</span>
+      {% endfor %}
+      {{ field(placeholder=field.label.text, class="form-control") }}
+    {% endfor %}
+
+    <button class="btn btn-primary btn-lg btn-block">Sign me up!</button>
+  </form>
+  <a href="/">Back Home</a>
+</div>
+</div>
+
+{% endblock %}

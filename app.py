@@ -2,13 +2,13 @@
 import os
 import GoogleMapsAPIKey
 
-from flask import Flask, request, render_template, jsonify, session, flash, redirect, g
+from flask import Flask, request, render_template, jsonify, session, flash, redirect, g, abort
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from models import db, connect_db, Restroom, User, Favorite
 from forms import UserAddForm, LoginForm, UserEditForm
 from GoogleSearch import GoogleSearchClass
+from models import db, connect_db, Restroom, User, Favorite
 
 API_KEY = GoogleMapsAPIKey.api_key
 
@@ -23,7 +23,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
-# db.create_all()
+db.create_all()
 
 debug = DebugToolbarExtension(app)
 
@@ -52,12 +52,28 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+
 @app.route('/')
-def home():
-    """Show home page"""
+def homepage():
+    """Show homepage:
 
-    return render_template('home.html')
+    - anon users: no favorites
+    - logged in: favorites already saved
+    """
 
+    if g.user:
+
+        restroom = (Restroom
+                    .query
+                    .filter(Restroom.user_id))
+                    
+
+        fav_restroom_ids = [fav.place_id for fav in g.user.favorites]
+
+        return render_template('homepage.html', restroom=restroom, favorites=fav_restroom_ids)
+
+    else:
+        return render_template('home_general.html')
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -84,14 +100,14 @@ def signup():
 
         except IntegrityError:
             flash("Email already exists", 'danger')
-            return render_template('users/login.html', form=form)
+            return render_template('login.html', form=form, user=user)
 
         do_login(user)
 
         return redirect("/")
 
     else:
-        return render_template('users/signup.html', form=form)
+        return render_template('signup.html', form=form)
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -110,7 +126,7 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/login.html', form=form)
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -122,7 +138,8 @@ def logout():
 
         flash("You've been logged out", 'success')
 
-        return redirect ('/login')
+        return redirect ('/')
+
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():
@@ -139,8 +156,57 @@ def delete_user():
 
     return redirect("/signup")
 
-##########################################
 
+#############################################
+########  SEARCH FEATURES ################
+#############################################
+
+@app.route('/search')
+def searchbox():
+    """Search area for restroom"""
+
+    search = request.args.get('q')
+
+    client = GoogleSearchClass(api_key = API_KEY, address_or_postal_code=search)
+    client.search()
+    filtered_list = client.filter_results()
+    detailed_list = client.detail()
+    filtered=list(filtered_list)
+    
+    # if dict(search_result['status']) != "OK":
+    #     flash("Not a valid address or zip code", "danger")
+    #     return ('/')
+
+    for restroom in filtered[0]:
+        name = restroom['name']
+        latitude = restroom['geometry']['location']['lat']
+        longitude = restroom['geometry']['location']['lng']
+        address = restroom['vicinity']
+        place_id = restroom['place_id'] 
+        user_id = g.user.id
+
+        restroom_query = Restroom.query.filter_by(place_id=place_id)
+        if restroom_query.count() > 0:
+           pass
+        else:
+            restroom = Restroom(name=name,
+                            upvote = 0,
+                            downvote=0,
+                            latitude=latitude,
+                            longitude=longitude,
+                            address=address,
+                            place_id=place_id,
+                            user_id = user_id
+                          )
+            db.session.add(restroom)
+            db.session.commit()
+        
+        
+    return render_template('restrooms.html', detailed_list=detailed_list, filtered=filtered[0], restroom=restroom)
+
+#####################################################
+##########  FAVORITING RESTROOMS #############
+########################################################
 @app.route('/users/<int:user_id>/favorites')
 def users_show(user_id):
     """Show user profile with favorites listed"""
@@ -153,30 +219,40 @@ def users_show(user_id):
                 .filter(Favorite.user_id == user_id)
                 .limit(100)
                 .all())
-    return render_template('users/favorites.html', user=user, favorites=favorites)
+    return render_template('favorites.html', user=user, favorites=favorites)
 
-# ############################################
 
-@app.route('/search')
-def searchbox():
-    """Search area for restroom"""
+@app.route('/restrooms/<restroom_place_id>/favorite', methods=['POST'])
+def add_favorite(restroom_place_id):
+    """Toggle a favorite restroom for the currently-logged-in user."""
 
-    search = request.args.get('q')
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
 
-    client = GoogleSearchClass(api_key = API_KEY, address_or_postal_code=search)
-    client.search()
-    # search_result2 = dict(search_result)
-    
-    client.filter_results()
-    detailed_list = client.detail()
+    favorite_restroom = Restroom.query.get_or_404(restroom_place_id)
+    # if favorite_restroom.user_id == g.user.id:
+    #     return abort(403)
 
-    # if search_result['status'] != "OK":
-    #     flash("Not a valid address or zip code", "danger")
-    #     return ('/')
+    user_favorites = g.user.favorites
 
-    return render_template('restrooms.html', detailed_list=detailed_list)
+    if favorite_restroom in user_favorites:
+        g.user.favorites = [favorite for favorite in user_favorites if favorite != favorite_restroom]
+    else:
+        g.user.favorites.append(favorite_restroom)
 
-#####################################################
+    db.session.commit()
+
+    return redirect(request.referrer)
+#################################################
+    ######### Error Page #################
+#################################################
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """404 NOT FOUND page."""
+
+    return render_template('error_page.html'), 404
 
 @app.after_request
 def add_header(req):
