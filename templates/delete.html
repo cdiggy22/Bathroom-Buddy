@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <div class="col-lg-12 col-md-8 col-sm-12">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Bathroom Buddy</a>
@@ -23,25 +22,15 @@
           <h1 class="display-4">Bathroom Buddy</h1>
           <p class="lead">We know you have to go!</p>
         </div>
-        <a href="/">Search Again</a>
-      </div>
-    <ul class="list-group">
-      {% for place in detailed_list %}
-        <li class="list-group-item" id="restroom">
-          <ul style="list-style-type:none;">
-             <li>Name:<a class="restroom-name" href="/restrooms/{{place.place_id}}">{{place.name}}</a></li>
-             <li>Address: {{place.formatted_address}}</li>
-             {% if place.rating %}
-                <li>Rating: {{place.rating}}</li>
-             {% endif %}
-             {% if place.formatted_phone_number %}
-                <li>Number: {{place.formatted_phone_number}}</li>
-             {% endif %}
-          </ul>
-        </li>
-      {% endfor %}
-    </ul>
-    
-</div>
+    </div>
 
-  {% endblock %}
+    <h2>It's gone.<br> Thanks for letting us know!</h2>
+    id = {{restroom.place_id}}
+
+    <form method="POST" action="/restrooms/{{restroom.place_id}}/delete class="delete_restroom">
+        <button>
+            DELETE FOR GOOD
+        </button>
+    </form>
+
+{% endblock %}

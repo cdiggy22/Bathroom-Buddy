@@ -38,16 +38,6 @@ class Restroom(db.Model):
         nullable=False,
     )
 
-    upvote = db.Column(
-        db.Integer,
-        nullable=True,
-    )
-
-    downvote = db.Column(
-        db.Integer,
-        nullable=True,
-    )
-
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -144,6 +134,24 @@ class Favorite(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade')
+    )
+
+    restroom_id = db.Column(
+        db.Text,
+        db.ForeignKey('restrooms.place_id', ondelete='cascade')
+    )
+
+class Blacklist(db.Model):
+    """Loctions that have been marked as NOT having available restrooms"""
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False
     )
 
     restroom_id = db.Column(

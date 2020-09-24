@@ -17,6 +17,12 @@
   <div class="col-sm-9">
       <h1>Favorites </h1>
     <div class="row">
+        <hr>
+        <br>
+        {% if not user.favorites  %}
+            <h3>No favorites yet, do a search to get started</h2>
+        {% endif %}
+
         <ul class="list-group" id="restroom">
           {% for restroom in user.favorites %}
           <li class="list-group-item">
