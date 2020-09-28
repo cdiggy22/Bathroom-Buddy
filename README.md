@@ -1,6 +1,9 @@
 # Bathroom-Buddy
 This is Bathroom Buddy. A website desgined to help indiviudals who are looking for a nearby location that may have an available restroom if they are in an unfamiliar area of if they are on the go.
 <br>
+
+Live app deployed here: https://bathroom-buddy.herokuapp.com/
+
 <br>
 
 The models contain Restrooms, Users, Favorites, and Blacklist
