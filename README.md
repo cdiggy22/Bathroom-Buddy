@@ -28,7 +28,8 @@ https://dbdiagram.io/d/5f5579fa88d052352cb62883
   
 <b>Resources Used:</b>
 
-- GoogleMapsAPI
+- GoogleMapsAPI (Places Search Library)
+https://developers.google.com/places/web-service/search
 
 
 <br>
