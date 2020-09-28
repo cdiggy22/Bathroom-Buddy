@@ -1,35 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="col-lg-12 col-md-8 col-sm-12">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div id="restroom-page" class="col-lg-12 col-md-8 col-sm-12">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="#">Bathroom Buddy</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-link" href="/">Search</a>
+            <a class="nav-link active" href="/">Home<span class="hover"></a>
+            <a class="nav-link" href="/">Search<span class="hover"></span></a>
             {% if g.user %}
-                <a class="nav-link" href="/users/{{g.user.id}}/favorites">Favorites</a>
+                <a class="nav-link" href="/users/{{g.user.id}}/favorites">Favorites<span class="hover"></span></a>
             {% endif %}
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/logout">Logout<span class="hover"></span></a>
           </div>
         </div>
       </nav>
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-4">Bathroom Buddy</h1>
-          <p class="lead">We know you have to go!</p>
+        <div id="title-container">
+          <h1 class="display-4">Restrooms</h1>
         </div>
-        <a href="/">Search Again</a>
-      </div>
+  
     <ul class="list-group">
       {% for place in detailed_list %}
         <li class="list-group-item" id="restroom">
           <ul style="list-style-type:none;">
              <li>Name:<a class="restroom-name" href="/restrooms/{{place.place_id}}">{{place.name}}</a></li>
+             {{place.place_id}}
              <li>Address: {{place.formatted_address}}</li>
              {% if place.rating %}
                 <li>Rating: {{place.rating}}</li>

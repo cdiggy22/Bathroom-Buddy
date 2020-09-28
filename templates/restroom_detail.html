@@ -8,24 +8,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-link" href="/">Search</a>
+            <a class="nav-link active" href="/">Home <span class="hover"></a>
+            <a class="nav-link" href="/">Search<span class="hover"></span></a>
             {% if g.user %}
-                <a class="nav-link" href="/users/{{g.user.id}}/favorites">Favorites</a>
+                <a class="nav-link" href="/users/{{g.user.id}}/favorites">Favorites<span class="hover"></span></a>
             {% endif %}
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/logout">Logout<span class="hover"></span></a>
           </div>
         </div>
       </nav>
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-4">Bathroom Buddy</h1>
-          <p class="lead">We know you have to go!</p>
-        </div>
-        <a href="/">Search Again</a>
-    </div>
     <div>
-        <h1>Details</h1>
+    <div id="detail-page">
+      <h1 id="detail-title">Details</h1>
             <h2 class="restroom-name">{{restroom.name}}</h2> located at
             <h3>{{restroom.address}}</h3>
 
@@ -34,7 +28,7 @@
                 <button class="
                  btn
                 btn-sm
-                 {{'btn-primary'}}"
+                 "
                 >
               <i class="fas fa-star"> Add to Favorties</i>
                 </button>
@@ -42,13 +36,14 @@
             <button class="
               btn
               btn-sm
-              {{'btn-danger'}}" 
+              {{'btn-danger-outline'}}" 
               data-target="#deleteModal" data-toggle="modal"
                 >
                 <i class="fas fa-toilet-paper-slash"></i><small>No bathroom</small>
             </button>
           <br>
           {% endif %}
+    </div>
     </div>
     <div class="modal fade" id="deleteModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -63,9 +58,9 @@
               <h3>Are you sure there's no restroom here?</h3>
             </div>
             <div class="modal-footer">
-                <btn class="btn btn-secondary" data-dismiss="modal">Close</btn>
+                <btn class="btn btn-outline-secondary" data-dismiss="modal">Close</btn>
               <form action="/restrooms/{{restroom.place_id}}/blacklist" method="GET">
-                <button class="btn btn-sm {{'btn-danger'}}">Remove</button>
+                <button class="btn {{'btn-outline-danger'}}">I'm Sure</button>
               </form>
               
             </div>

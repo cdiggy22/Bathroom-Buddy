@@ -58,7 +58,7 @@ def do_logout():
 def homepage():
     """Show homepage:
 
-    - anon users: no favorites
+    - anon users: must signup
     - logged in: favorites already saved
     """
 
@@ -78,15 +78,7 @@ def homepage():
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
-    """Handle user signup.
-
-    Create new user and add to DB. Redirect to home page.
-
-    If form not valid, present form.
-
-    If the there already is a user with that username: flash message
-    and re-present form.
-    """
+    """Handle user signup."""
 
     form = UserAddForm()
 
@@ -176,33 +168,39 @@ def searchbox():
     
     if search_result['status'] == "INVALID_REQUEST":
         raise ValueError('invalid zip code or address')
-        
-    for restroom in filtered[0]:
-        name = restroom['name']
-        latitude = restroom['geometry']['location']['lat']
-        longitude = restroom['geometry']['location']['lng']
-        address = restroom['vicinity']
-        place_id = restroom['place_id'] 
-        user_id = g.user.id
 
-        restroom_query = Restroom.query.filter_by(place_id=place_id)
-        blacklist_query = Blacklist.query.filter_by(restroom_id=place_id)
+    for place in detailed_list:
+        blacklist_exists = db.session.query(db.exists().where(Blacklist.restroom_id == place['place_id'])).scalar()
 
-        if restroom_query.count() > 0 or blacklist_query.count() > 0:
-           pass
-        else:
-            restroom = Restroom(name=name,
+        if blacklist_exists is True:
+          detailed_list.remove(place)
+        else: 
+            for restroom in filtered[0]:
+                name = restroom['name']
+                latitude = restroom['geometry']['location']['lat']
+                longitude = restroom['geometry']['location']['lng']
+                address = restroom['vicinity']
+                place_id = restroom['place_id'] 
+                user_id = g.user.id
+
+                toilet = Restroom(name=name,
                             latitude=latitude,
                             longitude=longitude,
                             address=address,
                             place_id=place_id,
                             user_id = user_id
                           )
-            db.session.add(restroom)
-            db.session.commit()
+            
+                restroom_exists = db.session.query(db.exists().where(Restroom.place_id == place_id)).scalar()
+
+                if restroom_exists is True:
+                    continue
+                else:
+                    db.session.add(toilet)
+                    db.session.commit()
+    
         
-        
-    return render_template('restrooms.html', detailed_list=detailed_list, filtered=filtered[0], restroom=restroom)
+    return render_template('restrooms.html', detailed_list=detailed_list)
 
 #####################################################
 ##########  FAVORITING RESTROOMS #############
@@ -215,16 +213,6 @@ def show_favorites(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template('favorites.html', user=user, favorites=user.favorites)
-
-
-
-@app.route('/restrooms/<restroom_place_id>')
-def restroom(restroom_place_id):
-    """Show restroom detail """
-
-    restroom = Restroom.query.get_or_404(restroom_place_id)
-  
-    return render_template('restroom_detail.html', restroom=restroom)
 
 
 @app.route('/restrooms/<restroom_place_id>/favorite', methods=['POST'])
@@ -248,6 +236,19 @@ def add_favorite(restroom_place_id):
 
     return redirect(request.referrer)
 
+#################################################
+######## Restroom Details ################
+###############################################
+
+@app.route('/restrooms/<restroom_place_id>')
+def restroom(restroom_place_id):
+    """Show restroom detail """
+
+    restroom = Restroom.query.get_or_404(restroom_place_id)
+  
+    return render_template('restroom_detail.html', restroom=restroom)
+
+
 ##############################################
 ########### BlackList Locations ##############
 #############################################
@@ -270,23 +271,10 @@ def blacklist_restroom(restroom_place_id):
 
     db.session.add(restroom)
     db.session.commit()
+    flash('blacklist added')
 
 
     return render_template('delete.html', blacklist_restroom=blacklist_restroom)
-
-@app.route('/restrooms/<restroom_place_id>/delete', methods=['POST'])
-def delete_restroom(restroom_place_id):
-    """Delete location from restroom table"""
-
-
-    restroom = Restroom.query.get_or_404(restroom_place_id)
-    db.session.delete(restroom)
-    db.session.commit()
-    flash('location deleted')
-
-    return redirect('/')
-
-
 
 
 #################################################
@@ -299,14 +287,14 @@ def page_not_found(e):
 
     return render_template('error_page.html'), 404
 
-#  @app.errorhandler(Exception)
-#  def handle_exception(e):
-#     """handle all exceptions"""
-#      if isinstance(e, HTTPException):
-#          print(e)
-#          return e
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """handle all exceptions"""
+    if isinstance(e, HTTPException):
+        print(e)
+        return e
     
-#     return render_template("error_page.html", e=e), 500
+    return render_template("error_page.html", e=e), 500
 
 @app.after_request
 def add_header(req):

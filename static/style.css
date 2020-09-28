@@ -1,0 +1,250 @@
+
+
+.btn:hover {
+    cursor: pointer;
+}
+
+a{
+    font:500 11px Lato;
+    letter-spacing:2px;
+    padding:16px !important;
+    color:#9d0208 !important;
+    text-transform:uppercase;
+    position:relative;
+    z-index:1000;
+}
+/* Home Page */
+body {
+    background-image: url('/static/images/tissue.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+
+}
+div.container-home {
+    height: 10em;
+    position: relative;
+    display: flex;
+    margin-top: 10rem;
+}
+
+div.container-home div {
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+    color: #9d0208;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) 
+}
+
+.logo {
+    padding-left: 4rem;
+}
+
+#homeform {
+    padding-left: 2rem;
+}
+
+.btn  {
+    border-radius: 10px;
+    color: #9d0208;
+}
+
+.searchbox { 
+    width: 255px; 
+    height: 50px; 
+    border: 1px solid #999999; 
+    padding: 5px; 
+    border-radius: 10px;
+}
+#user-form {
+    margin-top: 3rem;
+}
+
+#welcome {
+    margin-top: 3rem;
+}
+.home-hero {
+    margin-top: 3rem;
+}
+
+#bathroom {
+    font-family: 'Indie Flower', cursive;
+    font-size: 48px;
+}
+
+.join-message {
+    font-family: 'Raleway', sans-serif;
+    color: #9d0208;
+    margin-top: 3rem;
+}
+/* Navbar */
+
+.navbar{
+    border-bottom:4px solid #9d0208 !important;
+    background-color: transparent !important;
+}
+  
+.navbar-brand{
+    font-family: 'Indie Flower', cursive;
+    font-size: 28px;
+    text-transform:uppercase;
+    color:#9d0208 !important;
+    letter-spacing:2px;
+    margin-top:2px;
+}
+  
+.nav{
+    margin-bottom:0px;
+}
+
+    a{
+      font-family: 'Indie Flower', cursive;
+      font-size: medium;
+      font-weight: 300;
+      letter-spacing:2px;
+      padding:16px !important;
+      color: #9d0208  !important;
+      text-transform:uppercase;
+      position:relative;
+      z-index:1000;
+    }
+    a:hover{
+        color: #011627 !important;
+        font-weight: 700;
+    }
+
+    span{
+      position:relative;
+    }
+
+  
+.navbar-expand .navbar-toggle{
+    border:none;
+}
+  
+.navbar-collapse{
+    box-shadow:none !important;
+    border:none !important;
+}
+  
+.navbar-expand .navbar-toggle:hover{
+    background:transparent !important;
+}
+  
+.navbar-expand .navbar-toggle:focus{
+    background:transparent !important;
+}
+  
+.navbar-expand .navbar-toggle:active{
+    background:transparent !important;
+}
+  
+.icon-bar{
+    background:transparent !important;
+}
+  
+.hover{
+    display:block;
+    position:absolute;
+    width:0%;
+    height:100%;
+    top:0px;
+    left:0px;
+    background: #2ec4b6 !important;
+    z-index:0;
+    opacity:0;
+}
+  
+@media (max-width: 767px) {
+  .nav {
+    padding-bottom: 20px;
+    a {
+      padding: 12px !important;
+        }
+    }
+}
+  
+  @media (max-width: 480px) {
+    .nav{
+      padding-bottom:20px;
+    }
+}
+/* Search Results */
+#title-container {
+    display: flex;
+}
+.display-4 {
+    font-family: 'Indie Flower', cursive;
+    color: #9d0208;
+    align-items: flex-start;
+    margin-left: 3rem;
+}
+.list-group-item {
+    border-style: none;
+    margin-bottom: 1rem;
+    color: #9d0208;
+    background-color: transparent;
+}
+
+a.restroom-name {
+    font-family: 'Raleway', sans-serif;
+    color: #03045e !important;
+    text-decoration: none;
+}
+a.restroom-name:hover {
+    color: #9d0208 !important;
+}
+
+#restroom-page {
+    background-image: url('/static/images/tissue.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; 
+    background-attachment: fixed;
+    font-family: 'Raleway', sans-serif;
+
+}
+
+.search {
+    font-family: 'Raleway', sans-serif;
+    color: #9d0208;
+}
+/* Restroom Details */
+#detail-page {
+    font-family: 'Raleway', sans-serif;
+    color: #9d0208;
+    margin-left: 3rem;
+    margin-top: 3rem;
+}
+#detail-title {
+    font-family: 'Indie Flower', cursive;
+}
+
+
+/* spinner */
+@keyframes spinner {
+    0% {
+        transform: translate3d(-50%, -50%, 0) rotate(0deg);
+    }
+    100% {
+         transform: translate3d(-50%, -50%, 0) rotate(360deg);
+    }
+}
+.spinner {
+    height: 100vh;  
+    position: relative;
+    
+    ::before {
+        border: solid 3px #eee;
+        border-bottom-color: #EF6565;
+        border-radius: 50%;
+        content: "";
+        height: 40px;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        width: 40px;
+    }
+}

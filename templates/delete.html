@@ -17,20 +17,15 @@
           </div>
         </div>
       </nav>
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-4">Bathroom Buddy</h1>
-          <p class="lead">We know you have to go!</p>
-        </div>
-    </div>
 
-    <h2>It's gone.<br> Thanks for letting us know!</h2>
-    id = {{restroom.place_id}}
+    <h2 class="display-4">It's gone now <br> <i class="fas fa-ban"></i>
+      
+     <br> Thanks for letting us know!</h2>
 
-    <form method="POST" action="/restrooms/{{restroom.place_id}}/delete class="delete_restroom">
-        <button>
-            DELETE FOR GOOD
-        </button>
-    </form>
+    <a href="/">Back Home</a>
+
+    
+
+  
 
 {% endblock %}

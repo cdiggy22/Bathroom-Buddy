@@ -103,14 +103,7 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, email, password):
-        """Find user with `username` and `password`.
-
-        This is a class method (call it on the class, not an individual user.)
-        It searches for a user whose password hash matches this password
-        and, if it finds such a user, returns that user object.
-
-        If can't find matching user (or if password is wrong), returns False.
-        """
+        """Find user with `email` and `password`"""
 
         user = cls.query.filter_by(email=email).first()
 
@@ -157,6 +150,7 @@ class Blacklist(db.Model):
     restroom_id = db.Column(
         db.Text,
         db.ForeignKey('restrooms.place_id', ondelete='cascade')
+        
     )
 
 def connect_db(app):
