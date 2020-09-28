@@ -20,7 +20,6 @@ class GoogleSearchClass(object):
     bathroom_type = ['restaurant', 'cafe', 'food', 'book_store', 'point_of_interest', 'supermarket', 'home_goods_store', 'movie_theater', 'library']
     place_ids = []
     detailed_list = []
-    # page_2 = {}
     filtered=[]
 
 
@@ -54,7 +53,7 @@ class GoogleSearchClass(object):
         self.lng = lng
         return lat, lng
     
-    def search(self, keyword='food store', location=None, rankby='distance', pagetoken=None):
+    def search(self, keyword='store', location=None, rankby='distance', pagetoken=None):
         lat, lng = self.lat, self.lng
         if location != None:
             lat, lng = self.extract_lat_lng(location=location)
@@ -88,12 +87,6 @@ class GoogleSearchClass(object):
                 filtered.append(place)
                 place_id_list.append(place['place_id'])
 
-        # for place in page_2['results']:
-        #     if 'OPERATIONAL' in place.values() and any(item in bathroom for item in place['types']):
-        #         # filtered.append(place)
-        #         place_id_list.append(place['place_id'])
-        
-        
         self.place_ids = place_id_list
         self.search_results={}
         print(type(filtered))
@@ -104,14 +97,6 @@ class GoogleSearchClass(object):
         place_id_list = self.place_ids
         detailed_list = []
 
-        # for place in filtered:
-        #     place_id = place.place_id
-        #     detail_base_endpoint = f"https://maps.googleapis.com/maps/api/place/details/{self.data_type}"
-        #     detail_params = {
-        #     "place_id": f"{place_id}",
-        #     "fields" : ",".join(fields),
-        #     "key": self.api_key
-        #     }
 
         for id in place_id_list:
             place_id = id
